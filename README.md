@@ -1149,6 +1149,10 @@ Rujukan muncul sebagai **??** sampai dokumen dikompilasi dua kali.
 | PDF tidak ter-*refresh* / "permission denied" saat menulis `main.pdf` | PDF sedang dibuka di Adobe Reader (Windows mengunci file) | Tutup PDF eksternal, gunakan viewer tab VS Code. |
 | Kompilasi seperti *hang* | MiKTeX menunggu konfirmasi instal paket, atau error di mode interaktif | Batalkan (*Terminate current compilation*), instal paket manual di MiKTeX Console, set *on-the-fly install* = Always. |
 | Build dari file bab menghasilkan error "missing \begin{document}" | LaTeX Workshop menganggap file bab sebagai root | Buka `main.tex` lalu build, atau tambahkan `% !TEX root = ../../main.tex` di baris pertama file bab. |
+| `(lualatex:72040): GLib-GIO-ERROR **: 20:22:09.577: Settings schema 'org.gnome.settings-daemon.plugins.xsettings' does not contain a key named 'antialiasing'` | Your GTK_PATH points into the VS Code Snap installation. You're running MiKTeX on Ubuntu 26.04, and your shell appears to have inherited GTK-related environment settings from VS Code. This is a plausible source of the crash.
+A similar error has been reported when GTK applications run from VS Code's Snap environment. See the VS Code issue report. | `env -u GTK_PATH -u GTK_MODULES -u GIO_MODULE_DIR -u GSETTINGS_SCHEMA_DIR LC_ALL=C.UTF-8 lualatex main.tex` Because your GTK_PATH points into the VS Code Snap directory, check whether VS Code is passing its environment to LaTeX Workshop. `env | grep -E '^(GTK|GIO|GSETTINGS|LD_LIBRARY_PATH)` Then try compiling through latexmk with the same environment cleanup: `env -u GTK_PATH -u GTK_MODULES -u GIO_MODULE_DIR -u GSETTINGS_SCHEMA_DIR LC_ALL=C.UTF-8 latexmk -lualatex main.tex
+`
+ |
 
 ### 21.2 Masalah paket & font
 

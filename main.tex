@@ -1,3 +1,11 @@
+% TROUBLESHOOT: if you got an error on making glossaries after u add some user recipe, you can compile manualy and make sure the file main.glo and main.gls appear
+% because lualatex not defaultly create gls so u need to make .glo
+% lualatex main.tex 	--> make main.glo
+% biber main 
+% makeglossaries main 	--> make main.gls
+% lualatex main.tex 	--> compile file 
+% lualatex main.tex
+% !TEX program = lualatex
 %======================== USD Thesis Template ==============================%
 % Made according to the guide, keeping in mind the guide was made for Word
 % TODO: Make a copy of this file that can be used right away once everything is done
@@ -58,48 +66,58 @@
 \usepackage{pythontex}
 \usepackage{addfont}
 \usepackage{tabularx}
-\usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
-\usepackage[some]{background}
+\usepackage{background}
 \usepackage{comment}
 \usepackage{chngcntr} % Used to change numbering of equations, figures, etc. to be per-chapter / detach chapter numbering
 % \usepackage{glossaries}
 \usepackage[toc]{glossaries}
+
 \makeglossaries
 \subimport{Front_matters}{glossary_entries}
 \begin{comment}
-For glossaries to work, we also need to compile with makeglossaries, so in VSCode, the user settings will be:
+For glossaries and citation to work, we also need to compile with makeglossaries and biber, so in VSCode, the user settings will be:
 "latex-workshop.latex.recipes": [
-	{
-		"name": "latexmk glossary (lualatex + makeglossaries)",
-		"tools": [
-			"lualatexmk",
-			"makeglossaries",
-			"lualatexmk"
-		]
-	},
+  {
+    "name": "lualatex + biber + glossaries",
+    "tools": [
+      "lualatexmk",
+      "biber",
+      "makeglossaries",
+      "lualatexmk",
+      "lualatexmk"
+    ]
+  }
 ],
 "latex-workshop.latex.tools": [
-	{
-		"name": "makeglossaries",
-		"command": "makeglossaries",
-		"args": [
-			"%DOCFILE%"
-		]
-	},
-	{
-		"name": "lualatexmk",
-		"command": "latexmk",
-		"args": [
-			"-synctex=1",
-			"-interaction=nonstopmode",
-			"-file-line-error",
-			"-pdf",
-			"-pdflatex=lualatex %O %S",
-			"%DOC%"
-		]
-	}
+  {
+    "name": "lualatexmk",
+    "command": "latexmk",
+    "args": [
+      "-synctex=1",
+      "-interaction=nonstopmode",
+      "-file-line-error",
+      "-pdf",
+      "-pdflatex=lualatex %O %S",
+      "%DOC%"
+    ]
+  },
+  {
+    "name": "biber",
+    "command": "biber",
+    "args": [
+      "%DOCFILE%"
+    ]
+  },
+  {
+    "name": "makeglossaries",
+    "command": "makeglossaries",
+    "args": [
+      "%DOCFILE%"
+    ]
+  }
 ],
+
 \end{comment}
 % Abbreviate commands for acronyms
 % \newcommand{\as}[1]{\acrshort{#1}}
@@ -113,12 +131,12 @@ For glossaries to work, we also need to compile with makeglossaries, so in VSCod
 	vline = {solid}
 }
 
-%TODO: Set title details
+%TODO: Set title detail
 %============================ Title details =================================%
-\def\title{TITLE}
-\def\englishtitle{ENGLISH TITLE}
-\def\author{NAME}
-\def\nim{NIM}
+\def\title{Identifikasi Makalah Seminal Melalui Centrality Jendela Geser Temporal dalam Jaringan Sitasi Akademik}
+\def\englishtitle{Identifying Seminal Papers Through Temporal Sliding-Window Centrality in Academic Citation Networks}
+\def\author{AUDRI OKTAVIA}
+\def\nim{235314220}
 \def\prodi{Informatika}
 \def\program{Informatics}
 \def\fakultas{Sains dan Teknologi}
@@ -133,19 +151,27 @@ For glossaries to work, we also need to compile with makeglossaries, so in VSCod
 
 
 %============================= Watermark ===================================%
-\backgroundsetup{hshift=0.2cm}
-\SetBgContents{\includegraphics[width=2.5cm]{\detokenize{SANATA_DHARMA_yellow.png}}}
-\SetBgOpacity{0.8}
-\SetBgAngle{0}
-\SetBgScale{3}
+% \backgroundsetup{hshift=0.2cm}
+% \SetBgContents{\includegraphics[width=2.5cm]{\detokenize{SANATA_DHARMA_yellow.png}}}
+% \SetBgOpacity{0.8}
+% \SetBgAngle{0}
+% \SetBgScale{3}
+
 
 %============================= Citations ====================================%
 % Needs to make sure why \parencite doesn't return an author-year format
-% 	Solved. No need to use \parencite*, use regular \parencite
-\usepackage[style=ieee]{biblatex}
+% 	Solved. No need to use \parencite*, use regular \parencite used because using APA format
+% Citation in parentheses			\parencite{Mariani2016Identify}					(Mariani dkk., 2016)
+% Author as part of the sentence	\textcite{Kreutz2020}							Kreutz dkk. (2020)
+% Several sources at once			\parencite{Mariani2016Identify, Mariani_2019}	(Mariani dkk., 2016, 2019)
+% With a page number				\parencite[hlm.~12]{Wang_2013}					(Wang dkk., 2013, hlm. 12)
+% Year only							\parencite*{Ke_2015}							(2015)
+% Author name only					\citeauthor{Ke_2015}							Ke dkk.
+\usepackage[style=apa]{biblatex}
+\usepackage[english]{babel}
 { \DeclareLanguageMapping{indonesian}{indonesian} } % map babel 'indonesian' -> indonesian.lbx
 { \AtBeginBibliography{\selectlanguage{indonesian}} } % pastikan daftar pustaka pakai string dlm LBX
-\addbibresource{examplecitations.bib}
+\addbibresource{./Back_matters/daftar_pustaka.bib} % File referensi, lihat daftar_pustaka.bib
 
 
 
@@ -294,11 +320,18 @@ path picture={\draw
 
 
 %================== Equations Modifications =============%
-
-\BeforeBeginEnvironment{equation}{\vspace{-0.5cm}}
-\BeforeBeginEnvironment{equation*}{\vspace{-0.5cm}}
-\AfterEndEnvironment{equation}{\vspace{-0.5cm}}
-\AfterEndEnvironment{equation*}{\vspace{-0.5cm}}
+% Pengaturan Spasi di Sekitar Persamaan
+% Catatan: jangan pakai \vspace sebelum/sesudah equation; jika teks menyambung
+% setelah persamaan, \vspace terselip di antara baris teks dan membuatnya rapat.
+% \normalsize mereset nilai ini, jadi ditambahkan ke \normalsize.
+\makeatletter
+\g@addto@macro\normalsize{%
+	\setlength{\abovedisplayskip}{6pt}%
+	\setlength{\belowdisplayskip}{6pt}%
+	\setlength{\abovedisplayshortskip}{6pt}%
+	\setlength{\belowdisplayshortskip}{6pt}%
+}
+\makeatother
 
 % \setlength{\abovedisplayskip}{0pt}           % Space sebelum equation
 % \setlength{\belowdisplayskip}{0pt}           % Space setelah equation
@@ -319,6 +352,7 @@ path picture={\draw
 }
 \renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
 
+% Penomoran Persamaan Berbasis Bab
 \numberwithin{equation}{chapter}
 \renewcommand{\theequation}{\arabic{chapter}.\arabic{equation}}
 
@@ -510,7 +544,7 @@ path picture={\draw
 
 % Styling untuk entry Daftar Persamaan
 % Use correct tocloft naming for custom list: myequations
-
+% --------Kustomisasi Format Entri Daftar Persamaan----------
 \makeatletter
 \renewcommand*{\l@myequations}[2]{%
   \vspace{1ex}%
@@ -535,11 +569,10 @@ path picture={\draw
 % Command untuk menambahkan equation ke dalam list
 \newcommand{\myequation}[1]{%
 	\addcontentsline{equ}{myequations}{\protect\numberline{\theequation}#1}%
-	\vspace{-1em}
 }
 
 %***** Table of Algorithms
-\counterwithout{algorithm}{chapter} % Detach algorithm numbering
+% \counterwithout{algorithm}{chapter} % Dinonaktifkan: membuat penomoran algoritma tidak mengikuti bab
 
 \newcommand{\listofalgoritmsname}{Daftar Algoritma}
 \newlistof{myalgorithms}{alg}{\listofalgoritmsname}
@@ -551,6 +584,7 @@ path picture={\draw
 
 % Styling untuk entry Daftar Algoritma
 % Use correct tocloft naming for custom list: myalgorithms
+
 \makeatletter
 \renewcommand*{\l@myalgorithms}[2]{%
   \vspace{1ex}%
@@ -565,7 +599,7 @@ path picture={\draw
 % Command untuk menambahkan algorithm ke dalam list
 \newcommand{\myalgorithm}[1]{%
 	\addcontentsline{alg}{myalgorithms}{\protect\numberline{\thealgorithm}#1}%
-	\vspace{-1em}
+	% \vspace{-1em} 
 }
 
 \newfontfamily\algofont{Courier New}
@@ -1067,9 +1101,13 @@ Put your Motto here.\\
 
 \backmatter
 \clearpage
+% \nocite{*} menampilkan SEMUA entri di daftar_pustaka.bib walau belum disitasi.
+% Hapus baris ini jika hanya ingin menampilkan referensi yang disitasi dengan \cite{}.
+% \nocite{*}
 \printbibliography[
-heading=bibintoc, 
-title=DAFTAR PUSTAKA]
+	heading=bibintoc, 
+	title=DAFTAR PUSTAKA
+]
 
 \clearpage
 % This LLM statement is not required by the university; include it only if you want academic transparency.

@@ -1,4 +1,4 @@
-# Dokumentasi Template Skripsi LaTeX — Universitas Sanata Dharma
+# Dokumentasi Template Skripsi — SaDhar
 
 Dokumen ini menjelaskan cara menyiapkan, menjalankan, dan menulis skripsi dengan template ini:
 mulai dari instalasi MiKTeX dan paketnya, konfigurasi VS Code + LaTeX Workshop, struktur file,
